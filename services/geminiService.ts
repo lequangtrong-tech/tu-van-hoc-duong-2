@@ -3,7 +3,7 @@ import { SYSTEM_INSTRUCTION, SAFETY_KEYWORDS, CRISIS_MESSAGE } from "../constant
 import { Role } from "../types";
 
 // Initialize API Client
-const apiKey = process.env.API_KEY;
+const apiKey = import.meta.env.VITE_API_KEY;
 if (!apiKey) {
   console.warn("API Key is missing!");
 }
