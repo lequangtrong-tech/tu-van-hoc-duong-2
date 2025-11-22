@@ -18,7 +18,7 @@ let chatSession: ChatSession | null = null;
 const getChatSession = async (): Promise<ChatSession> => {
   if (!chatSession) {
     chatSession = await ai.chats.create({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-1.5-flash',
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
         temperature: 0.7, // Warm and creative but grounded
