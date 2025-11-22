@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { SYSTEM_INSTRUCTION } from "../constants";
 
-// Lấy Key từ biến môi trường (Vite)
+// Lấy Key từ biến môi trường
 const apiKey = import.meta.env.VITE_API_KEY;
 
 let chatSession: any = null;
@@ -12,16 +12,13 @@ export const getChatSession = async () => {
     throw new Error("API Key missing");
   }
 
-  // Khởi tạo SDK chuẩn
   const genAI = new GoogleGenerativeAI(apiKey);
   
-  // Dùng model 1.5 Flash (Bản ổn định)
   const model = genAI.getGenerativeModel({ 
     model: "gemini-1.5-flash",
     systemInstruction: SYSTEM_INSTRUCTION,
   });
 
-  // Tạo phiên chat mới nếu chưa có
   if (!chatSession) {
     chatSession = model.startChat({
       history: [],
@@ -33,4 +30,9 @@ export const getChatSession = async () => {
   }
 
   return chatSession;
+};
+
+// ĐÂY LÀ HÀM BỊ THIẾU LÚC NÃY
+export const resetChat = () => {
+  chatSession = null;
 };
