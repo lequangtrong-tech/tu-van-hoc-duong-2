@@ -1,30 +1,23 @@
-import { GoogleGenAI, ChatSession, Content } from "@google/genai";
+import { GoogleGenAI, Chat, GenerateContentResponse } from "@google/genai";
 import { SYSTEM_INSTRUCTION, SAFETY_KEYWORDS, CRISIS_MESSAGE } from "../constants";
-import { Role } from "../types";
 
 // Initialize API Client
-const apiKey = import.meta.env.VITE_API_KEY;
-if (!apiKey) {
-  console.warn("API Key is missing!");
-}
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-const ai = new GoogleGenAI({ apiKey: apiKey || 'dummy-key' });
-
-let chatSession: ChatSession | null = null;
+let chatSession: Chat | null = null;
 
 /**
  * Initialize or retrieve the chat session.
  */
-const getChatSession = async (): Promise<ChatSession> => {
+const getChatSession = (): Chat => {
   if (!chatSession) {
-    chatSession = await ai.chats.create({
-      model: 'gemini-1.5-flash',
+    chatSession = ai.chats.create({
+      model: "gemini-2.5-flash",
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
         temperature: 0.7, // Warm and creative but grounded
         candidateCount: 1,
       },
-      history: [],
     });
   }
   return chatSession;
@@ -49,11 +42,11 @@ export const sendMessageToGemini = async (message: string): Promise<{ text: stri
       return { text: CRISIS_MESSAGE, isCrisis: true };
     }
 
-    const session = await getChatSession();
+    const session = getChatSession();
     
     // 2. Call API
-    const result = await session.sendMessage({ message });
-    const responseText = result.text;
+    const response: GenerateContentResponse = await session.sendMessage({ message });
+    const responseText = response.text;
 
     // 3. Check if the model returned the Crisis Message (based on system instruction)
     // We compare a snippet to be sure.
