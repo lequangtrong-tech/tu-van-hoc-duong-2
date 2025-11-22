@@ -6,6 +6,7 @@ const apiKey = import.meta.env.VITE_API_KEY;
 
 let chatSession: any = null;
 
+// 1. Hàm khởi tạo phiên chat
 export const getChatSession = async () => {
   if (!apiKey) {
     console.error("Chưa có API Key!");
@@ -32,7 +33,20 @@ export const getChatSession = async () => {
   return chatSession;
 };
 
-// ĐÂY LÀ HÀM BỊ THIẾU LÚC NÃY
+// 2. Hàm reset chat (Làm mới)
 export const resetChat = () => {
   chatSession = null;
+};
+
+// 3. Hàm gửi tin nhắn (ĐÂY LÀ HÀM BỊ THIẾU LÚC NÃY)
+export const sendMessageToGemini = async (message: string) => {
+  try {
+    const session = await getChatSession();
+    const result = await session.sendMessage(message);
+    const response = await result.response;
+    return response.text();
+  } catch (error) {
+    console.error("Lỗi khi gửi tin nhắn:", error);
+    throw error;
+  }
 };
